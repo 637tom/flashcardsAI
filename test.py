@@ -1,14 +1,16 @@
 import ollama
 
-def clean_test():
-    response = ollama.chat(
-        model='qwen2.5:3b',
-        messages=[{'role': 'user', 'content': 'Napisz tylko jedno słowo: BANANA'}]
-    )
-    
-    # Wyciągamy tylko tekst ze struktury, którą daje Ollama
-    text_only = response['message']['content'].strip()
-    
-    print(f"Surowa odpowiedź: {text_only}")
+# 1. Wysyłamy pytanie do DeepSeeka
+print("Czekaj, DeepSeek myśli...")
+response = ollama.chat(
+    model='deepseek-r1:1.5b',
+    messages=[{'role': 'user', 'content': 'Napisz w jednym zdaniu co to jest ATP'}]
+)
 
-clean_test()
+# 2. Wyciągamy surową odpowiedź (z blokiem <think>)
+full_content = response['message']['content']
+
+print("-" * 30)
+print("PEŁNA ODPOWIEDŹ:")
+print(full_content)
+print("-" * 30)

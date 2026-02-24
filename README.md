@@ -14,5 +14,5 @@ conda activate flashcardsAI
 3. Pull the model:
 
 ```bash
-ollama pull qwen2.5:3b
+ollama pull deepseek-r1:1.5b
 ```
