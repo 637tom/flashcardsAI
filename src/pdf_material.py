@@ -22,14 +22,14 @@ class PdfMaterial:
             return full_text
         return None
     
-    def parsing_to_chunk(self, chunk_size: int) -> list[str] | None:# slicing to chunks of "chunk_size" length
+    def parsing_to_chunk(self, chunk_size: int, overlap_size: int) -> list[str] | None:# slicing to chunks of "chunk_size" length
         full_text = self.parsing_to_text()
 
         if full_text is not None:
             chunks: list[str] = []
 
             for i in range(0, len(full_text), chunk_size):
-                slice_of_text = full_text[i:i+chunk_size]
+                slice_of_text = full_text[max(0, i - overlap_size):i+chunk_size]
                 chunks.append(slice_of_text)
             return chunks
         return None

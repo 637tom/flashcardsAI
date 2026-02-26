@@ -1,0 +1,9 @@
+### TASK
+Extract the most important educational facts, definitions, or dates from the provided text.
+
+### CONSTRAINTS
+- List maximum 5 bullet points.
+- Each point must be a single, standalone fact.
+- Focus on terms that are likely to appear on an exam.
+
+### TEXT TO ANALYZE:
