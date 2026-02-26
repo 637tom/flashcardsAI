@@ -3,23 +3,18 @@ from pathlib import Path
 from pypdf import PdfReader
 
 class PdfMaterial:
-    def __init__(self, file_path: str | Path) -> None:
-        self.file_path = Path(file_path)
+    def __init__(self, file_object) -> None:
+        self.file = file_object
 
     def is_file_valid(self) -> bool:# firstly check if file exists, then if it's pdf format
-        if(self.file_path.exists()):
-            if(self.file_path.suffix == ".pdf"):
-                return True
-            else:
-                print("This file is not a .pdf file")
-                return False
-        else:
-            print("This file does not exist")
-            return False
+        filename = self.file.name
+        if filename.lower().endswith(".pdf"):
+            return True
+        return False
 
     def parsing_to_text(self) -> str | None:# parsing from pdf file to a str
         if(self.is_file_valid() == True):
-            reader = PdfReader(self.file_path)
+            reader = PdfReader(self.file)
             full_text: str = ""
 
             for page in reader.pages:
@@ -41,12 +36,12 @@ class PdfMaterial:
 
 
 
-my_pdf_file = PdfMaterial("materials/englishvocab.pdf")
+#my_pdf_file = PdfMaterial("materials/englishvocab.pdf")
 
 #parasing to chunks
-chunks: list[str] | None = my_pdf_file.parsing_to_chunk(200)
+#chunks: list[str] | None = my_pdf_file.parsing_to_chunk(200)
 #output some chunks of size 200 for example
-print("First chunk of the text:")
-print(chunks[0])
-print("\nSecond chunk of the text:")
-print(chunks[1])
+#print("First chunk of the text:")
+#print(chunks[0])
+#print("\nSecond chunk of the text:")
+#print(chunks[1])
