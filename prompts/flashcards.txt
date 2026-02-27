@@ -1,0 +1,37 @@
+### STEP 1 — RELEVANCE CHECK
+Before doing anything else, decide if the text contains educationally useful content.
+Consider the text NOT relevant if it is any of the following:
+- A table of contents, index, or list of page numbers.
+- A bibliography, references section, or list of citations.
+- Copyright notices, disclaimers, or publisher information.
+- Acknowledgements, prefaces, or dedications.
+- Headers, footers, or repeated navigational text with no substance.
+- Garbled, encoding-broken, or otherwise unreadable text.
+
+If the text is NOT relevant, immediately output [] and stop.
+
+### STEP 2 — CONTENT TYPE DETECTION
+If the text IS relevant, determine its type:
+- "vocabulary": text that contains terms paired with short definitions or explanations.
+- "article": text that contains complex concepts, processes, or explanations requiring deeper understanding.
+
+### STEP 3 — FLASHCARD GENERATION
+Based on the type you detected, generate a JSON array of flashcards:
+- If "vocabulary": each flashcard has the term as "question" and its definition as "answer".
+- If "article": each flashcard has a conceptual question as "question" and the specific idea, notion, or explanation as "answer".
+
+### CONSTRAINTS
+- Output ONLY a valid raw JSON array. No markdown, no explanation, no code blocks.
+- Each object in the array must have exactly two keys: "question" and "answer".
+- Generate as many flashcards as needed to cover the important content. Do not limit yourself to a fixed number.
+- If no useful flashcards can be generated, output an empty array: []
+
+### OUTPUT FORMAT:
+[
+  {
+    "question": "...",
+    "answer": "..."
+  }
+]
+
+### TEXT TO ANALYZE:
