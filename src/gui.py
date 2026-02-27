@@ -1,8 +1,7 @@
 import streamlit as st
-import json
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from pdf_material import PdfMaterial
 from ai_module import AiModule
+from flashcard_runner import generate_all_flashcards
 
 # Sidebar configuration
 with st.sidebar:
@@ -25,24 +24,17 @@ if uploaded_file is not None:
         if "flashcards" not in st.session_state:
             st.session_state.flashcards = {}
 
-        # Top-level button – generates flashcards for every chunk at once
+        # button – generates flashcards for every chunk at once
         if st.button("Generate Flashcards for All Chunks"):
             progress = st.progress(0)
             status = st.empty()
-            completed = 0
 
-            with ThreadPoolExecutor() as executor:
-                future_to_index = {
-                    executor.submit(ai_tool.extract_to_flashcards, chunk): i
-                    for i, chunk in enumerate(chunks)
-                }
-                for future in as_completed(future_to_index):
-                    i = future_to_index[future]
-                    st.session_state.flashcards[i] = future.result()
-                    completed += 1
-                    progress.progress(completed / len(chunks))
-                    status.text(f"Processed {completed} / {len(chunks)} chunks...")
-
+            results = generate_all_flashcards(
+                ai_tool, chunks,
+                on_progress=progress.progress,
+                on_status=status.text,
+            )
+            st.session_state.flashcards.update(results)
             status.text("Done!")
 
         st.divider()
@@ -57,7 +49,7 @@ if uploaded_file is not None:
                 with tab_ai:
                     if i in st.session_state.get("flashcards", {}):
                         cards = st.session_state.flashcards[i]
-                        if isinstance(cards, list) and len(cards) > 0:
+                        if isinstance(cards, list) and len(cards) > 0:# check if cards is a non-empty list
                             for card in cards:
                                 st.markdown(f"**Q: {card.get('question', 'N/A')}**")
                                 st.info(f"A: {card.get('answer', 'N/A')}")
