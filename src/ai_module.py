@@ -26,13 +26,10 @@ class AiModule:
         return self.ask_model(full_prompt)
 
     def extract_to_flashcards(self, chunk: str) -> list[dict] | None:
-        full_prompt = f"{self.p_flashcards}\n\n{chunk}"
-        raw_response = self.ask_model(full_prompt)
-        # Clean up in case the model wraps the output in markdown code blocks
-        cleaned = raw_response.replace("```json", "").replace("```", "").strip()
+        raw = self.ask_model(f"{self.p_flashcards}\n\n{chunk}")
+        cleaned = raw.replace("```json", "").replace("```", "").strip()
         try:
-            flashcards: list[dict] = json.loads(cleaned)
-            return flashcards
+            return json.loads(cleaned)
         except json.JSONDecodeError:
             return None
 

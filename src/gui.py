@@ -1,7 +1,6 @@
 import streamlit as st
 from pdf_material import PdfMaterial
 from ai_module import AiModule
-from flashcard_runner import generate_all_flashcards
 
 # Sidebar configuration
 with st.sidebar:
@@ -26,15 +25,10 @@ if uploaded_file is not None:
 
         # button – generates flashcards for every chunk at once
         if st.button("Generate Flashcards for All Chunks"):
-            progress = st.progress(0)
             status = st.empty()
-
-            results = generate_all_flashcards(
-                ai_tool, chunks,
-                on_progress=progress.progress,
-                on_status=status.text,
-            )
-            st.session_state.flashcards.update(results)
+            for i, chunk in enumerate(chunks):
+                status.text(f"Processing chunk {i + 1} / {len(chunks)}...")
+                st.session_state.flashcards[i] = ai_tool.extract_to_flashcards(chunk)#keeping generated FC in memory for later use
             status.text("Done!")
 
         st.divider()
@@ -47,17 +41,14 @@ if uploaded_file is not None:
                     st.write(chunk)
 
                 with tab_ai:
-                    if i in st.session_state.get("flashcards", {}):
-                        cards = st.session_state.flashcards[i]
-                        if isinstance(cards, list) and len(cards) > 0:# check if cards is a non-empty list
-                            for card in cards:
-                                st.markdown(f"**Q: {card.get('question', 'N/A')}**")
-                                st.info(f"A: {card.get('answer', 'N/A')}")
-                                st.divider()
-                        else:
-                            st.warning("No flashcards could be generated for this chunk.")
+                    cards = st.session_state.get("flashcards", {}).get(i)
+                    if cards:
+                        for card in cards:
+                            st.markdown(f"**Q: {card.get('question', 'N/A')}**")#bolded question of a FC, get value for "question if does not exit write N/A"
+                            st.info(f"A: {card.get('answer', 'N/A')}")#info box with answer of a FC
+                            st.divider()
                     else:
-                        st.caption("Click \"Generate Flashcards for All Chunks\" above to populate this tab.")
+                        st.caption("No flashcards yet. Click \"Generate Flashcards for All Chunks\".")
             
     else:
         st.error("Error occured while chunking file")
